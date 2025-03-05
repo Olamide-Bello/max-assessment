@@ -63,7 +63,7 @@ Sign up for a safehaven MFB sandbox account. Create an app on the dashboard then
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd maxim-assessment
+cd max-assessment
 ```
 
 2. Install dependencies:
