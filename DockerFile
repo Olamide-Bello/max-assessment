@@ -17,5 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run the application
-# Command to run the application
 CMD ["npm", "run", "dev"]  # Use "npm start" for production
