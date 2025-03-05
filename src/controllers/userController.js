@@ -1,8 +1,9 @@
 const User = require("../models/User");
 
+// Retrieve user profile excluding sensitive information
 exports.getUserProfile = async (req, res) => {
     try {
-        // Fetch user from database
+        // Select only necessary fields for profile display
         const user = await User.findById(req.user.userId).select("firstName lastName email virtualAccountNumber");
 
         if (!user) {
@@ -11,16 +12,19 @@ exports.getUserProfile = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
+        // Error handling for fetching user profile
         console.error("Error fetching user profile:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
+// Update user profile fields with validation
 exports.updateUserProfile = async (req, res) => {
     try {
         const { firstName, lastName } = req.body;
         const updateFields = {};
 
+        // Only include provided fields in update operation
         if (firstName !== undefined) {
             updateFields.firstName = firstName.trim();
         }
@@ -36,7 +40,7 @@ exports.updateUserProfile = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(
             req.user.userId,
             updateFields,
-            { new: true, runValidators: true }
+            { new: true, runValidators: true }  // Ensure validation runs on update
         );
 
         if (!updatedUser) {
@@ -45,6 +49,7 @@ exports.updateUserProfile = async (req, res) => {
 
         res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
+        // Error handling for updating user profile
         console.error("Error updating user profile:", error);
         res.status(500).json({ message: "Error updating profile" });
     }

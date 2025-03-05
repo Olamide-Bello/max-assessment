@@ -56,6 +56,7 @@ CALLBACK_URL=your_callback_url
 SETTLEMENT_BANK_CODE=your_bank_code
 SETTLEMENT_ACCOUNT_NUMBER=your_account_number
 ```
+Sign up for a safehaven MFB sandbox account. Create an app on the dashboard then get your CLIENT_ID and ENCODED_CLIENT_ASSERTION
 
 ### Installation
 

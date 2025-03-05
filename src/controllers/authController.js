@@ -38,16 +38,21 @@ exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         
+        // Use the same error message for both cases to prevent user enumeration
+        const invalidCredentialsMessage = "Invalid email or password";
+        
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Invalid email or password" });
+            return res.status(400).json({ message: invalidCredentialsMessage });
         }
 
+        // Verify password using bcrypt to prevent timing attacks
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid email or password" });
+            return res.status(400).json({ message: invalidCredentialsMessage });
         }
 
+        // Generate JWT with 1 day expiration for security
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
         res.status(200).json({ message: "Login successful", token });
     } catch (error) {
