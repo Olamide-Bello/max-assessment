@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # MongoDB service
   mongodb:
     image: mongo:latest
     container_name: mongodb_container
@@ -12,6 +13,25 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: secret
     volumes:
       - mongo_data:/data/db
+
+  # Node.js backend service
+  backend:
+    build:
+      context: .  # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile  # Name of the Dockerfile
+    container_name: backend_container
+    restart: always
+    ports:
+      - "5000:5000"  # Expose port 5000 for the backend
+    environment:
+      MONGO_URI: mongodb://admin:secret@mongodb:27017/safehaven?authSource=admin
+      JWT_SECRET: your_jwt_secret
+      SAFEHAVEN_WEBHOOK_SECRET: your_shared_secret_key
+    depends_on:
+      - mongodb  # Ensure MongoDB starts before the backend
+    volumes:
+      - .:/app  # Map the current directory to /app in the container
+      - /app/node_modules  # Preserve node_modules in the container
 
 volumes:
   mongo_data:

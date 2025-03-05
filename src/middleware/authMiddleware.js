@@ -4,7 +4,7 @@ const authMiddleware = (req, res, next) => {
     const token = req.header("Authorization");
 
     if (!token) {
-        return res.status(401).json({ message: "Access denied. No token provided." });
+        return res.status(401).json({ message: "Authorization token required" });
     }
 
     try {
@@ -12,7 +12,22 @@ const authMiddleware = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(403).json({ message: "Invalid or expired token" });
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                message: "Token has expired",
+                error: "token_expired"
+            });
+        } else if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                message: "Invalid token format",
+                error: "token_invalid"
+            });
+        } else {
+            return res.status(401).json({ 
+                message: "Token validation failed",
+                error: "token_verification_failed"
+            });
+        }
     }
 };
 

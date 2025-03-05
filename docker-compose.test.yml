@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  test-mongodb:
+    container_name: maxim-test-mongodb
+    image: mongo:4.4.1
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_DATABASE: test-db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    command: mongod --bind_ip_all
+
+networks:
+  default:
+    name: maxim-test-network

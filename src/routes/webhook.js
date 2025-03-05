@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const verifyWebhookSignature = require("../middleware/verifyWebhookSignature");
 const { processWebhookEvent } = require('../services/webhookHandler');
 
-router.post('/safehaven', async (req, res) => {
+router.post('/safehaven', verifyWebhookSignature, async (req, res) => {
   try {
     const { event, data } = req.body;
 

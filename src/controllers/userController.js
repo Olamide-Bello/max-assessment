@@ -21,8 +21,13 @@ exports.updateUserProfile = async (req, res) => {
         const { firstName, lastName } = req.body;
         const updateFields = {};
 
-        if (firstName) updateFields.firstName = firstName;
-        if (lastName) updateFields.lastName = lastName;
+        if (firstName !== undefined) {
+            updateFields.firstName = firstName.trim();
+        }
+        
+        if (lastName !== undefined) {
+            updateFields.lastName = lastName.trim();
+        }
 
         if (Object.keys(updateFields).length === 0) {
             return res.status(400).json({ message: "No fields to update" });
@@ -41,6 +46,6 @@ exports.updateUserProfile = async (req, res) => {
         res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
         console.error("Error updating user profile:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Error updating profile" });
     }
 };

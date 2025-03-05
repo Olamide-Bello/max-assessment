@@ -36,32 +36,22 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
     try {
-      const { email, password } = req.body;
-  
-      // Check if user exists
-      const user = await User.findOne({ email });
-      console.log("User found:", user);
-      if (!user) {
-        return res.status(400).json({ message: "Invalid email or password" });
-      }
+        const { email, password } = req.body;
+        
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
 
-      console.log("Entered Password:", password);
-      console.log("Stored Hashed Password:", user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
 
-  
-      // Compare passwords
-      const isMatch = await bcrypt.compare(password, user.password);
-      console.log("Password match:", isMatch);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid email or password" });
-      }
-  
-      // Generate JWT token
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-  
-      res.status(200).json({ message: "Login successful", token });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        res.status(200).json({ message: "Login successful", token });
     } catch (error) {
-        console.error("Login Error:", error); // Log the actual error
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error("Login Error:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-  };
+};

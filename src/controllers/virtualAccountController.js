@@ -11,30 +11,35 @@ exports.createVirtualAccount = async (req, res) => {
         const payload = {
             validFor: 900,
             settlementAccount: {
-                bankCode: "090286",
-                accountNumber: "0116587163",
+                bankCode: process.env.SETTLEMENT_BANK_CODE,
+                accountNumber: process.env.SETTLEMENT_ACCOUNT_NUMBER,
             },
             amountControl: "Fixed",
-            callbackUrl: 'https://example.com', // Replace with your actual callback URL
+            callbackUrl: process.env.CALLBACK_URL,
             amount: 100000,
             externalReference: uuidv4(), 
         };
 
         // Call the Safehaven API to create the virtual account
-        const response = await safehavenApi.createVirtualAccount(payload);
-
-        console.log('Response:', response);
+        const result = await safehavenApi.createVirtualAccount(req.body);
+    
+        if (result.statusCode === 400) {
+          return res.status(400).json({
+            status: "error",
+            message: result.message
+          });
+        }
         // Update user's virtual account number
         await User.findByIdAndUpdate(
             req.user.userId,
-            { virtualAccountNumber: response.data.accountNumber },
+            { virtualAccountNumber: result.data.accountNumber },
             { new: true }
         );
 
         // Return the response to the client
         res.status(200).json({
             status: 'success',
-            data: response,
+            data: result,
         });
     } catch (error) {
         console.error('Error creating virtual account:', error.message);

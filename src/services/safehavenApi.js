@@ -75,8 +75,6 @@ const createVirtualAccount = async (payload) => {
         },
       }
     );
-
-    console.log("virt res", response.data, payload);
     return response.data;
   } catch (error) {
     console.error("Error creating virtual account_:", error);

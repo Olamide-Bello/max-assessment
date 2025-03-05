@@ -4,6 +4,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createVirtualAccount);
+router.post("/virtual-account", authMiddleware, createVirtualAccount);
 
 module.exports = router;
