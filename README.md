@@ -112,7 +112,7 @@ npm run test:coverage
 
 ### Virtual Account Endpoints
 - `POST /api/banking/virtual-account` - Create virtual account
-- `GET /api/banking/transactions` - Get transaction history
+
 
 ### Webhook Endpoints
 - `POST /api/webhooks/safehaven` - Payment notification webhook
